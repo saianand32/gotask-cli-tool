@@ -1,0 +1,18 @@
+# Go binaries
+/bin/
+/cmd/app
+
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Configuration files
+.env
+
+# Ignore vendor directory if not using vendoring
+/vendor/
+
+# Ignore log files
+*.log
