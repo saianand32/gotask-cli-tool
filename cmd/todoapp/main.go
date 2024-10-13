@@ -1,10 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
+	"slices"
 
+	"github.com/saianand32/go_todo_cli/internal/constants"
 	"github.com/saianand32/go_todo_cli/internal/filestorage"
 	"github.com/saianand32/go_todo_cli/internal/todo"
 )
@@ -14,49 +15,72 @@ func main() {
 	fs, err := filestorage.New()
 	if err != nil {
 		fmt.Println("Error loading store:", err)
-		os.Exit(1)
+		return
 	}
 
-	fmt.Println("999")
 	// Initialize an empty Todos struct
 	todos := &todo.Todos{}
 
-	// Define flags for the command-line arguments
-	add := flag.Bool("add", false, "add a new todo")
-	ls := flag.Bool("ls", false, "list all tasks")
-	flag.Parse() // Parse the flags
+	// Check if there are enough arguments
+	if len(os.Args) < 2 {
+		fmt.Println("error: Please specify a command")
+		return
+	}
 
-	// Determine which action to take based on the flags
-	switch {
-	case *add:
-		// Check if enough arguments were provided
-		if len(flag.Args()) < 2 {
-			fmt.Println("Error: Please provide a group name and a task description.")
+	// Get the command (first positional argument)
+	command := os.Args[1]
+	if !slices.Contains(constants.ValidCommands, command) {
+		fmt.Println("error: invalid command", command)
+		return
+	}
+
+	// Handle commands
+	switch command {
+	case "add":
+		// Ensure we have enough arguments for the add command
+		if len(os.Args) < 2 {
+			fmt.Println("error: Please provide a group name and a task description.")
 			return
 		}
+		task := os.Args[2] // Get the third positional argument (task description)
 
-		group := flag.Arg(0) // Get the first positional argument (group name)
-		task := flag.Arg(1)  // Get the second positional argument (task description)
-
-		_, err := todos.Add(fs, group, task) // Pass the FileStorage instance
+		err := todos.Add(fs, task) // Pass the FileStorage instance
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("error:", err)
+			return
 		} else {
 			fmt.Println("Todo added successfully!")
 		}
 
-	case *ls:
-		// Check if enough arguments were provided
-		if len(flag.Args()) < 1 {
+	case "ls":
+		// Ensure we have enough arguments for the ls command
+		if len(os.Args) < 1 {
 			fmt.Println("Error: Please provide a group name to list tasks.")
 			return
 		}
 
-		group := flag.Arg(0) // Get the first positional argument (group name)
-
-		todos.Print(fs, group) // Pass the FileStorage instance
+		err := todos.Print(fs) // Pass the FileStorage instance
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	case "usegrp":
+		// Ensure we have enough arguments for the ls command
+		if len(os.Args) < 2 {
+			fmt.Println("Error: Please provide group name to use/create")
+			return
+		}
+		group := os.Args[2]
+		err := todos.CreateGroup(fs, group) // Pass the FileStorage instance
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Printf("Using: %s\n", group)
 
 	default:
-		fmt.Println("Error: Please specify a command (--add or --ls).")
+		fmt.Println("Error: Unknown command. Use 'add' to add a todo or 'ls' to list todos.")
 	}
+
+	return
 }
