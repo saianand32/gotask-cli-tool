@@ -17,15 +17,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Println("999")
 	// Initialize an empty Todos struct
 	todos := &todo.Todos{}
 
 	// Define flags for the command-line arguments
 	add := flag.Bool("add", false, "add a new todo")
-	flag.Parse()
+	ls := flag.Bool("ls", false, "list all tasks")
+	flag.Parse() // Parse the flags
 
-	// Check if the --add flag is set
-	if *add {
+	// Determine which action to take based on the flags
+	switch {
+	case *add:
 		// Check if enough arguments were provided
 		if len(flag.Args()) < 2 {
 			fmt.Println("Error: Please provide a group name and a task description.")
@@ -37,9 +40,23 @@ func main() {
 
 		_, err := todos.Add(fs, group, task) // Pass the FileStorage instance
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println("Error:", err)
 		} else {
 			fmt.Println("Todo added successfully!")
 		}
+
+	case *ls:
+		// Check if enough arguments were provided
+		if len(flag.Args()) < 1 {
+			fmt.Println("Error: Please provide a group name to list tasks.")
+			return
+		}
+
+		group := flag.Arg(0) // Get the first positional argument (group name)
+
+		todos.Print(fs, group) // Pass the FileStorage instance
+
+	default:
+		fmt.Println("Error: Please specify a command (--add or --ls).")
 	}
 }
