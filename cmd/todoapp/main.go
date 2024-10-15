@@ -71,16 +71,22 @@ func main() {
 			return
 		}
 		group := os.Args[2]
-		err := todos.CreateGroup(fs, group) // Pass the FileStorage instance
+		err := todo.CreateGroup(fs, group) // Pass the FileStorage instance
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		fmt.Printf("Using: %s\n", group)
 
+	case "showgrp":
+		err := todo.ListGroups(fs) // Pass the FileStorage instance
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
 	default:
-		fmt.Println("Error: Unknown command. Use 'add' to add a todo or 'ls' to list todos.")
+		fmt.Println("Error: Unknown command.")
 	}
 
-	return
 }

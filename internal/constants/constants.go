@@ -9,3 +9,10 @@ var Folders = map[string]string{
 var Files = map[string]string{
 	"GroupFile": "./store/configurations/group.txt",
 }
+
+var ValidCommands = []string{
+	"ls",
+	"usegrp",
+	"add",
+	"showgrp",
+}

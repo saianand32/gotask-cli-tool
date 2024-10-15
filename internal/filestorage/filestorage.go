@@ -69,10 +69,10 @@ func (fs *FileStorage) Read(fileName string) ([]models.Item, error) {
 	return items, nil
 }
 
-func (fs *FileStorage) Write(fileName string, data []models.Item) (bool, error) {
+func (fs *FileStorage) Write(fileName string, data []models.Item) error {
 	file, err := os.Create(fileName) // os.Create will either create or truncate the file
 	if err != nil {
-		return false, err
+		return err
 	}
 	defer file.Close()
 
@@ -80,8 +80,8 @@ func (fs *FileStorage) Write(fileName string, data []models.Item) (bool, error) 
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(data) // Marshal the data to JSON and write it
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

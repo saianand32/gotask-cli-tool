@@ -16,24 +16,29 @@ type Todos []models.Item
 // Add appends a new todo item to the Todos slice and writes it to the specified file.
 // It takes the FileStorage instance, the group name, and the task description as parameters.
 // If a todo with the same group and task already exists, it returns an error.
-func (t *Todos) Add(fs *filestorage.FileStorage, group, task string) (bool, error) {
+func (t *Todos) Add(fs *filestorage.FileStorage, task string) error {
+
+	group, err := GetCurrentGroup(fs)
+	if err != nil {
+		return err
+	}
 
 	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
 	data, err := fs.Read(fileName)
 	if err != nil {
-		return false, err
+		return err
 	}
 	*t = append(*t, data...)
 
 	id, err := helper.GenerateCryptoID()
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	// Check for duplicates
 	for _, v := range data {
 		if v.Group == group && v.Task == task {
-			return false, fmt.Errorf("previous task with the same name already exists")
+			return fmt.Errorf("previous task with the same name already exists")
 		}
 	}
 
@@ -45,11 +50,11 @@ func (t *Todos) Add(fs *filestorage.FileStorage, group, task string) (bool, erro
 		CompletedAt: time.Time{},
 	}
 	*t = append(*t, todo)
-	isSuccess, err := fs.Write(fileName, *t)
+	err = fs.Write(fileName, *t)
 	if err != nil {
-		return false, err
+		return err
 	}
-	return isSuccess, nil
+	return nil
 }
 
 // Complete marks a todo item as completed by setting the Done field to true
@@ -85,12 +90,18 @@ func (t *Todos) Delete(fs *filestorage.FileStorage, id string) (bool, error) {
 // It reads the todos from the specified file and appends them to the Todos slice.
 // The table includes a header for the group name and columns for UUID, task, completion status,
 // and created/completed timestamps. If there are any errors during file reading, it prints the error message.
-func (t *Todos) Print(fs *filestorage.FileStorage, group string) {
+func (t *Todos) Print(fs *filestorage.FileStorage) error {
+
+	group, err := GetCurrentGroup(fs)
+	if err != nil {
+		return err
+	}
+
 	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
 	data, err := fs.Read(fileName)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
 	*t = append(*t, data...)
 
@@ -150,6 +161,7 @@ func (t *Todos) Print(fs *filestorage.FileStorage, group string) {
 	table.SetStyle(simpletable.StyleUnicode)
 
 	table.Println()
+	return nil
 }
 
 // CountPending returns the number of todo items in the Todos slice that are not marked as done.
