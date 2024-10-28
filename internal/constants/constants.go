@@ -11,9 +11,15 @@ var Files = map[string]string{
 }
 
 var ValidCommands = []string{
-	"ls",
+
+	// group commands
 	"usegrp",
-	"add",
 	"showgrp",
 	"dropgrp",
+
+	//task commands
+	"ls",
+	"add",
+	"delete",
+	"amend",
 }

@@ -14,14 +14,15 @@ import (
 // creating an empty JSON file for tasks within the DataFolder.
 func CreateGroup(fs *filestorage.FileStorage, group string) error {
 	// Write the group name to the GroupFile.
-	data := []byte(group)
+	groupName := strings.ToLower(group)
+	data := []byte(groupName)
 	err := os.WriteFile(fs.GroupFile, data, 0644)
 	if err != nil {
 		return fmt.Errorf("couldn't write to file: %v", err)
 	}
 
-	// Create the group file path.
-	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
+	// Create the groupName file path.
+	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, groupName)
 
 	// Check if the file already exists.
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
@@ -61,30 +62,22 @@ func GetCurrentGroup(fs *filestorage.FileStorage) (string, error) {
 // ListGroups lists all available groups by scanning the DataFolder for JSON files.
 // The current group is highlighted in blue when listed.
 func ListGroups(fs *filestorage.FileStorage) error {
-	// List directory contents.
 	dirEntries, err := os.ReadDir(fs.DataFolder)
 	if err != nil {
 		return fmt.Errorf("couldn't list groups: %v", err)
 	}
 
-	// Fetch the current group to highlight.
-	currentGroup, err := GetCurrentGroup(fs)
-	if err != nil {
-		return fmt.Errorf("couldn't fetch current group: %v", err)
-	}
+	currentGroup, _ := GetCurrentGroup(fs)
 
-	// Print available groups.
 	fmt.Println("Available groups:")
 	for _, entry := range dirEntries {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
-			// Remove the ".json" extension to get the group name.
 			groupName := strings.TrimSuffix(entry.Name(), ".json")
 
-			// If the group is the current group, print it in blue.
 			if groupName == currentGroup {
-				fmt.Println("- " + helper.Green(groupName)) // Highlight current group in blue.
+				fmt.Println("- " + helper.Green(groupName))
 			} else {
-				fmt.Println("- " + groupName) // Regular group name display.
+				fmt.Println("- " + groupName)
 			}
 		}
 	}
@@ -93,11 +86,25 @@ func ListGroups(fs *filestorage.FileStorage) error {
 }
 
 func DropGroup(fs *filestorage.FileStorage, group string) error {
-	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
+
+	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, strings.ToLower(group))
 	err := os.Remove(fileName)
 	if err != nil {
 		fmt.Printf("Error deleting file: %v\n", err)
 		return err
+	}
+
+	cur_group, err := GetCurrentGroup(fs)
+	if err != nil {
+		return fmt.Errorf("fetching current group")
+	}
+
+	if strings.EqualFold(cur_group, group) {
+		data := []byte("")
+		err = os.WriteFile(fs.GroupFile, data, 0644)
+		if err != nil {
+			return fmt.Errorf("couldn't write to file: %v", err)
+		}
 	}
 	return nil
 }
