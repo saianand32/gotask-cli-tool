@@ -15,4 +15,5 @@ var ValidCommands = []string{
 	"usegrp",
 	"add",
 	"showgrp",
+	"dropgrp",
 }

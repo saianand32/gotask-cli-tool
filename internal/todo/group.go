@@ -91,3 +91,13 @@ func ListGroups(fs *filestorage.FileStorage) error {
 
 	return nil
 }
+
+func DropGroup(fs *filestorage.FileStorage, group string) error {
+	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
+	err := os.Remove(fileName)
+	if err != nil {
+		fmt.Printf("Error deleting file: %v\n", err)
+		return err
+	}
+	return nil
+}
