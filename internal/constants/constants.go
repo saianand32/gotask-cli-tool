@@ -16,6 +16,7 @@ var ValidCommands = []string{
 	"usegrp",
 	"showgrp",
 	"dropgrp",
+	"truncategrp",
 
 	//task commands
 	"ls",

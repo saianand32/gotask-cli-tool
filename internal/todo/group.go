@@ -68,8 +68,13 @@ func ListGroups(fs *filestorage.FileStorage) error {
 	}
 
 	currentGroup, _ := GetCurrentGroup(fs)
+	noGroupsText := ""
 
-	fmt.Println("Available groups:")
+	if len(dirEntries) == 0 {
+		noGroupsText = "(no groups available)"
+	}
+
+	fmt.Println("Available groups:", noGroupsText)
 	for _, entry := range dirEntries {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
 			groupName := strings.TrimSuffix(entry.Name(), ".json")
@@ -88,6 +93,11 @@ func ListGroups(fs *filestorage.FileStorage) error {
 func DropGroup(fs *filestorage.FileStorage, group string) error {
 
 	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, strings.ToLower(group))
+
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		return fmt.Errorf("no group exist named : %v", group)
+	}
+
 	err := os.Remove(fileName)
 	if err != nil {
 		fmt.Printf("Error deleting file: %v\n", err)
@@ -106,5 +116,24 @@ func DropGroup(fs *filestorage.FileStorage, group string) error {
 			return fmt.Errorf("couldn't write to file: %v", err)
 		}
 	}
+	fmt.Println("success: Dropped group - ", group)
+	return nil
+}
+
+func TruncateGroup(fs *filestorage.FileStorage, group string) error {
+
+	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, strings.ToLower(group))
+
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		return fmt.Errorf("no group exist named : %v", group)
+	}
+
+	data := []byte("[]")
+	err := os.WriteFile(fileName, data, 0644)
+	if err != nil {
+		fmt.Printf("Error truncating file: %v\n", err)
+		return err
+	}
+	fmt.Println("success: Truncated group - ", group)
 	return nil
 }
