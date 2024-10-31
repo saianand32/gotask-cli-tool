@@ -84,9 +84,18 @@ func main() {
 			fmt.Println(err)
 			return
 		}
+
 	case "dropgrp":
 		group := os.Args[2]
 		err := todo.DropGroup(fs, group)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case "truncategrp":
+		group := os.Args[2]
+		err := todo.TruncateGroup(fs, group)
 		if err != nil {
 			fmt.Println(err)
 			return
