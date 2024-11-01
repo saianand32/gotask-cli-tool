@@ -60,15 +60,30 @@ func (t *Todos) Add(fs *filestorage.FileStorage, task string) error {
 // Complete marks a todo item as completed by setting the Done field to true
 // and updating the CompletedAt field with the current time.
 // It searches for the todo item using its ID and returns an error if not found.
-func (t *Todos) Complete(fs *filestorage.FileStorage, id string) (bool, error) {
+func (t *Todos) Complete(fs *filestorage.FileStorage, id string) error {
+	group, err := GetCurrentGroup(fs)
+	if err != nil {
+		return err
+	}
+	fileName := fmt.Sprintf("%s/%s.json", fs.DataFolder, group)
+
+	data, err := fs.Read(fileName)
+	if err != nil {
+		return err
+	}
+	*t = append(*t, data...)
+
 	for i, todo := range *t {
 		if todo.Id == id {
+			if todo.Done {
+				return fmt.Errorf("todo with id %s already done", id)
+			}
 			(*t)[i].Done = true
 			(*t)[i].CompletedAt = time.Now()
-			return true, nil
+			return fs.Write(fileName, *t)
 		}
 	}
-	return false, fmt.Errorf("todo with id %s not found", id)
+	return fmt.Errorf("todo with id %s not found", id)
 }
 
 func (t *Todos) Delete(fs *filestorage.FileStorage, id string) (bool, error) {

@@ -22,5 +22,6 @@ var ValidCommands = []string{
 	"ls",
 	"add",
 	"delete",
+	"done",
 	"amend",
 }

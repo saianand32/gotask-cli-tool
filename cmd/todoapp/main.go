@@ -52,6 +52,23 @@ func main() {
 			fmt.Println("Todo added successfully!")
 		}
 
+	case "done":
+		// Ensure we have enough arguments for the add command
+		if len(os.Args) < 2 {
+			fmt.Println("error: Please provide a task id to mark as done.")
+			return
+		}
+		
+		taskId := os.Args[2] // Get the third positional argument (task description)
+
+		err := todos.Complete(fs, taskId) // Pass the FileStorage instance
+		if err != nil {
+			fmt.Println("error:", err)
+			return
+		} else {
+			fmt.Println(taskId, "marked Done")
+		}
+
 	case "ls":
 		// Ensure we have enough arguments for the ls command
 		if len(os.Args) < 1 {
