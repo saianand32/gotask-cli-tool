@@ -21,7 +21,7 @@ var ValidCommands = []string{
 	//task commands
 	"ls",
 	"add",
-	"delete",
+	// "delete",
 	"done",
-	"amend",
+	// "amend",
 }
