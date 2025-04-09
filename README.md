@@ -15,13 +15,13 @@ A simple, powerful command-line todo list application built with Go that helps y
 
 ```bash
 # Clone the repository
-git clone https://github.com/saianand32/go_todo_cli.git
+git clone https://github.com/saianand32/gotask-cli-tool.git
 
 # Navigate to the project directory
-cd go_todo_cli
+cd gotask-cli-tool
 
 # Build the application
-go build -o todo
+go build -o gotask
 ```
 
 
@@ -42,7 +42,7 @@ go build -o todo
 
 ## ProjectStructure
 ```bash
-go_todo_cli/
+gotask-cli-tool/
 ├── internal/
 │   ├── constants/
 │   │   └── constants.go          # List of valid commands and other constants

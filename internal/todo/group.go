@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/saianand32/go_todo_cli/internal/filestorage"
-	"github.com/saianand32/go_todo_cli/internal/helper"
+	"github.com/saianand32/gotask-cli-tool/internal/filestorage"
+	"github.com/saianand32/gotask-cli-tool/internal/helper"
 )
 
 // CreateGroup creates a new group by storing the group name in the GroupFile and

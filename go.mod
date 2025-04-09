@@ -1,4 +1,4 @@
-module github.com/saianand32/go_todo_cli
+module github.com/saianand32/gotask-cli-tool
 
 go 1.22.3
 

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/saianand32/go_todo_cli/internal/constants"
-	"github.com/saianand32/go_todo_cli/internal/helper"
-	"github.com/saianand32/go_todo_cli/internal/models"
+	"github.com/saianand32/gotask-cli-tool/internal/constants"
+	"github.com/saianand32/gotask-cli-tool/internal/helper"
+	"github.com/saianand32/gotask-cli-tool/internal/models"
 )
 
 type FileStorage struct {

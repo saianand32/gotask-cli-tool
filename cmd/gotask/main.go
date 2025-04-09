@@ -5,9 +5,9 @@ import (
 	"os"
 	"slices"
 
-	"github.com/saianand32/go_todo_cli/internal/constants"
-	"github.com/saianand32/go_todo_cli/internal/filestorage"
-	"github.com/saianand32/go_todo_cli/internal/todo"
+	"github.com/saianand32/gotask-cli-tool/internal/constants"
+	"github.com/saianand32/gotask-cli-tool/internal/filestorage"
+	"github.com/saianand32/gotask-cli-tool/internal/todo"
 )
 
 func main() {
@@ -58,7 +58,7 @@ func main() {
 			fmt.Println("error: Please provide a task id to mark as done.")
 			return
 		}
-		
+
 		taskId := os.Args[2] // Get the third positional argument (task description)
 
 		err := todos.Complete(fs, taskId) // Pass the FileStorage instance

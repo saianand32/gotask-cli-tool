@@ -1,6 +1,6 @@
 # Define variables
-APP_NAME := todoapp
-SRC_DIR := ./cmd/todoapp
+APP_NAME := gotask
+SRC_DIR := ./cmd/gotask
 BIN_DIR := ./bin
 GO := go
 GO_BUILD := $(GO) build -o $(BIN_DIR)/$(APP_NAME)
